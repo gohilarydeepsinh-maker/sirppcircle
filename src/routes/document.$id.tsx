@@ -195,7 +195,7 @@ function DocumentPage() {
   );
 }
 
-function Meta({ label, value }: { label: string; value?: string | null }) {
+function Meta({ label, value }: { label: string; value?: string | null | undefined }) {
   return (
     <div className="rounded-xl bg-muted/60 px-3 py-2">
       <dt className="text-[0.65rem] font-bold uppercase tracking-wide text-muted-foreground">
