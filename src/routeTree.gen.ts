@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
+import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as HomeRouteImport } from './routes/home'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin-login',
   path: '/admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrowseRoute = BrowseRouteImport.update({
+  id: '/browse',
+  path: '/browse',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompleteProfileRoute = CompleteProfileRouteImport.update({
@@ -38,12 +44,14 @@ const HomeRoute = HomeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin-login': typeof AdminLoginRoute
+  '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin-login': typeof AdminLoginRoute
+  '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
 }
@@ -51,20 +59,28 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin-login': typeof AdminLoginRoute
+  '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin-login' | '/complete-profile' | '/home'
+  fullPaths: '/' | '/admin-login' | '/browse' | '/complete-profile' | '/home'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin-login' | '/complete-profile' | '/home'
-  id: '__root__' | '/' | '/admin-login' | '/complete-profile' | '/home'
+  to: '/' | '/admin-login' | '/browse' | '/complete-profile' | '/home'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin-login'
+    | '/browse'
+    | '/complete-profile'
+    | '/home'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  BrowseRoute: typeof BrowseRoute
   CompleteProfileRoute: typeof CompleteProfileRoute
   HomeRoute: typeof HomeRoute
 }
@@ -83,6 +99,13 @@ declare module '@tanstack/react-router' {
       path: '/admin-login'
       fullPath: '/admin-login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/browse': {
+      id: '/browse'
+      path: '/browse'
+      fullPath: '/browse'
+      preLoaderRoute: typeof BrowseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/complete-profile': {
@@ -105,6 +128,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminLoginRoute: AdminLoginRoute,
+  BrowseRoute: BrowseRoute,
   CompleteProfileRoute: CompleteProfileRoute,
   HomeRoute: HomeRoute,
 }

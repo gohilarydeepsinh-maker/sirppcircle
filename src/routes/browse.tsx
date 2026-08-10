@@ -9,12 +9,13 @@ import { useDocuments, useSemesters, useSubjects, useTopics, useUnits } from "@/
 import { cn } from "@/lib/utils";
 
 type BrowseSearch = {
-  semester?: string;
-  subject?: string;
-  unit?: string;
-  topic?: string;
-  type?: string;
+  semester?: string | undefined;
+  subject?: string | undefined;
+  unit?: string | undefined;
+  topic?: string | undefined;
+  type?: string | undefined;
 };
+
 
 export const Route = createFileRoute("/browse")({
   ssr: false,
