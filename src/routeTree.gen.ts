@@ -14,6 +14,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as UploadRouteImport } from './routes/upload'
 import { Route as DocumentIdRouteImport } from './routes/document.$id'
 
@@ -42,6 +43,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UploadRoute = UploadRouteImport.update({
   id: '/upload',
   path: '/upload',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
+  '/profile': typeof ProfileRoute
   '/upload': typeof UploadRoute
   '/document/$id': typeof DocumentIdRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
+  '/profile': typeof ProfileRoute
   '/upload': typeof UploadRoute
   '/document/$id': typeof DocumentIdRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
+  '/profile': typeof ProfileRoute
   '/upload': typeof UploadRoute
   '/document/$id': typeof DocumentIdRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/complete-profile'
     | '/home'
+    | '/profile'
     | '/upload'
     | '/document/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/complete-profile'
     | '/home'
+    | '/profile'
     | '/upload'
     | '/document/$id'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/complete-profile'
     | '/home'
+    | '/profile'
     | '/upload'
     | '/document/$id'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   BrowseRoute: typeof BrowseRoute
   CompleteProfileRoute: typeof CompleteProfileRoute
   HomeRoute: typeof HomeRoute
+  ProfileRoute: typeof ProfileRoute
   UploadRoute: typeof UploadRoute
   DocumentIdRoute: typeof DocumentIdRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/upload': {
       id: '/upload'
       path: '/upload'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   BrowseRoute: BrowseRoute,
   CompleteProfileRoute: CompleteProfileRoute,
   HomeRoute: HomeRoute,
+  ProfileRoute: ProfileRoute,
   UploadRoute: UploadRoute,
   DocumentIdRoute: DocumentIdRoute,
 }
