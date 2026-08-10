@@ -103,13 +103,14 @@ export function AppShell({
   showNav = true,
 }: {
   title: string;
-  subtitle?: string;
-  backTo?: string;
-  onBack?: () => void;
+  subtitle?: string | undefined;
+  backTo?: string | undefined;
+  onBack?: (() => void) | undefined;
   actions?: ReactNode;
   children: ReactNode;
   showNav?: boolean;
 }) {
+
   const navigate = useNavigate();
 
   return (

@@ -14,6 +14,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as DocumentIdRouteImport } from './routes/document.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocumentIdRoute = DocumentIdRouteImport.update({
+  id: '/document/$id',
+  path: '/document/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
+  '/document/$id': typeof DocumentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
+  '/document/$id': typeof DocumentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,12 +70,25 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/home': typeof HomeRoute
+  '/document/$id': typeof DocumentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin-login' | '/browse' | '/complete-profile' | '/home'
+  fullPaths:
+    | '/'
+    | '/admin-login'
+    | '/browse'
+    | '/complete-profile'
+    | '/home'
+    | '/document/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin-login' | '/browse' | '/complete-profile' | '/home'
+  to:
+    | '/'
+    | '/admin-login'
+    | '/browse'
+    | '/complete-profile'
+    | '/home'
+    | '/document/$id'
   id:
     | '__root__'
     | '/'
@@ -75,6 +96,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/complete-profile'
     | '/home'
+    | '/document/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -83,6 +105,7 @@ export interface RootRouteChildren {
   BrowseRoute: typeof BrowseRoute
   CompleteProfileRoute: typeof CompleteProfileRoute
   HomeRoute: typeof HomeRoute
+  DocumentIdRoute: typeof DocumentIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/document/$id': {
+      id: '/document/$id'
+      path: '/document/$id'
+      fullPath: '/document/$id'
+      preLoaderRoute: typeof DocumentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -131,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   BrowseRoute: BrowseRoute,
   CompleteProfileRoute: CompleteProfileRoute,
   HomeRoute: HomeRoute,
+  DocumentIdRoute: DocumentIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
