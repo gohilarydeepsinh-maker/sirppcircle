@@ -204,8 +204,8 @@ export function useStats(enabled: boolean) {
     enabled,
     queryKey: ["stats"],
     queryFn: async () => {
-      const count = (table: string, filter?: (q: never) => never) => filter;
-      void count;
+
+
       const [
         students,
         captains,
