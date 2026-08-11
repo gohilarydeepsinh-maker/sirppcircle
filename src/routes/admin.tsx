@@ -1,14 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, X } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppShell, Protected } from "@/components/AppShell";
 import { DocumentCard } from "@/components/DocumentCard";
 import { EmptyState, ListSkeleton } from "@/components/EmptyState";
+import { ContentManager } from "@/components/admin/ContentManager";
+import { UserManager } from "@/components/admin/UserManager";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useDocuments, useStats } from "@/lib/data";
 import { logActivity } from "@/lib/activity";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,

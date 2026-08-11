@@ -17,6 +17,7 @@ import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as OwnerRouteImport } from './routes/owner'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as SiteEditorRouteImport } from './routes/site-editor'
 import { Route as UploadRouteImport } from './routes/upload'
 import { Route as DocumentIdRouteImport } from './routes/document.$id'
 
@@ -60,6 +61,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SiteEditorRoute = SiteEditorRouteImport.update({
+  id: '/site-editor',
+  path: '/site-editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UploadRoute = UploadRouteImport.update({
   id: '/upload',
   path: '/upload',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/owner': typeof OwnerRoute
   '/profile': typeof ProfileRoute
+  '/site-editor': typeof SiteEditorRoute
   '/upload': typeof UploadRoute
   '/document/$id': typeof DocumentIdRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/owner': typeof OwnerRoute
   '/profile': typeof ProfileRoute
+  '/site-editor': typeof SiteEditorRoute
   '/upload': typeof UploadRoute
   '/document/$id': typeof DocumentIdRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/owner': typeof OwnerRoute
   '/profile': typeof ProfileRoute
+  '/site-editor': typeof SiteEditorRoute
   '/upload': typeof UploadRoute
   '/document/$id': typeof DocumentIdRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/owner'
     | '/profile'
+    | '/site-editor'
     | '/upload'
     | '/document/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/owner'
     | '/profile'
+    | '/site-editor'
     | '/upload'
     | '/document/$id'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/owner'
     | '/profile'
+    | '/site-editor'
     | '/upload'
     | '/document/$id'
   fileRoutesById: FileRoutesById
@@ -156,6 +168,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   OwnerRoute: typeof OwnerRoute
   ProfileRoute: typeof ProfileRoute
+  SiteEditorRoute: typeof SiteEditorRoute
   UploadRoute: typeof UploadRoute
   DocumentIdRoute: typeof DocumentIdRoute
 }
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/site-editor': {
+      id: '/site-editor'
+      path: '/site-editor'
+      fullPath: '/site-editor'
+      preLoaderRoute: typeof SiteEditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/upload': {
       id: '/upload'
       path: '/upload'
@@ -244,19 +264,10 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   OwnerRoute: OwnerRoute,
   ProfileRoute: ProfileRoute,
+  SiteEditorRoute: SiteEditorRoute,
   UploadRoute: UploadRoute,
   DocumentIdRoute: DocumentIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
