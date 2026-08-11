@@ -32,14 +32,14 @@ const CATEGORY_EXTENSIONS: Record<string, string[]> = {
 };
 
 export type DocFilters = {
-  semesterId?: string | null;
-  subjectId?: string | null;
-  unitId?: string | null;
-  topicId?: string | null;
-  docType?: string | null;
-  recentOnly?: boolean;
-  status?: DocStatus | "all";
-  limit?: number;
+  semesterId?: string | null | undefined;
+  subjectId?: string | null | undefined;
+  unitId?: string | null | undefined;
+  topicId?: string | null | undefined;
+  docType?: string | null | undefined;
+  recentOnly?: boolean | undefined;
+  status?: DocStatus | "all" | undefined;
+  limit?: number | undefined;
 };
 
 export function useSemesters() {
