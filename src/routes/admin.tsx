@@ -65,40 +65,76 @@ function AdminPage() {
         ))}
       </section>
 
-      <section className="mt-7">
-        <h3 className="section-title">Pending approvals</h3>
-        <div className="mt-3 space-y-3">
-          {pending.isLoading ? (
-            <ListSkeleton rows={3} />
-          ) : (pending.data ?? []).length === 0 ? (
-            <EmptyState title="Nothing to review" message="All uploads have been reviewed." />
-          ) : (
-            pending.data!.map((doc) => (
-              <div key={doc.id} className="space-y-2">
-                <DocumentCard doc={doc} />
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => void decide(doc.id, "approved")}
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform active:scale-95"
-                  >
-                    <Check className="size-4" />
-                    Approve
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void decide(doc.id, "rejected")}
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-sm font-semibold text-destructive transition-transform active:scale-95"
-                  >
-                    <X className="size-4" />
-                    Reject
-                  </button>
+      <nav className="mt-6 flex gap-1.5 rounded-full border border-border bg-card p-1">
+        {TABS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setTab(item.id)}
+            className={cn(
+              "flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-colors",
+              tab === item.id ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+            )}
+          >
+            {item.label}
+          </button>
+        ))}
+      </nav>
+
+      {tab === "approvals" ? (
+        <section className="mt-5">
+          <h3 className="section-title">Pending approvals</h3>
+          <div className="mt-3 space-y-3">
+            {pending.isLoading ? (
+              <ListSkeleton rows={3} />
+            ) : (pending.data ?? []).length === 0 ? (
+              <EmptyState title="Nothing to review" message="All uploads have been reviewed." />
+            ) : (
+              pending.data!.map((doc) => (
+                <div key={doc.id} className="space-y-2">
+                  <DocumentCard doc={doc} />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void decide(doc.id, "approved")}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform active:scale-95"
+                    >
+                      <Check className="size-4" />
+                      Approve
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void decide(doc.id, "rejected")}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-sm font-semibold text-destructive transition-transform active:scale-95"
+                    >
+                      <X className="size-4" />
+                      Reject
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
+              ))
+            )}
+          </div>
+        </section>
+      ) : null}
+
+      {tab === "content" ? (
+        <section className="mt-5">
+          <h3 className="section-title">Content management</h3>
+          <div className="mt-3">
+            <ContentManager />
+          </div>
+        </section>
+      ) : null}
+
+      {tab === "users" ? (
+        <section className="mt-5">
+          <h3 className="section-title">User management</h3>
+          <div className="mt-3">
+            <UserManager />
+          </div>
+        </section>
+      ) : null}
     </AppShell>
   );
 }
