@@ -5,6 +5,7 @@ import { DocumentCard } from "@/components/DocumentCard";
 import { EmptyState, ListSkeleton } from "@/components/EmptyState";
 import { useAuth } from "@/lib/auth";
 import { useDocuments, useSemesters } from "@/lib/data";
+import { useSettings } from "@/lib/settings";
 
 export const Route = createFileRoute("/home")({
   ssr: false,
@@ -35,22 +36,23 @@ function greeting() {
 
 function HomePage() {
   const { profile, canUpload, isStaff } = useAuth();
+  const settings = useSettings();
   const semesters = useSemesters();
   const recent = useDocuments({ recentOnly: false, limit: 6 });
   const firstName = (profile?.name ?? "there").split(" ")[0];
 
   return (
-    <AppShell title="Campus Notes" subtitle={`${greeting()}, ${firstName}`}>
+    <AppShell title={settings.appName} subtitle={`${greeting()}, ${firstName}`}>
       <section className="surface-card overflow-hidden p-5">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-[0.68rem] font-bold uppercase tracking-wide text-accent-foreground">
           <Sparkles className="size-3.5" />
           {profile?.role}
         </span>
         <h2 className="mt-3 text-xl font-bold leading-snug">
-          Everything you need for this semester
+          {settings.homeHeading}
         </h2>
         <p className="mt-1.5 text-sm text-muted-foreground">
-          Browse by semester, subject, unit and topic — or jump straight to the newest notes.
+          {settings.homeText}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
@@ -58,7 +60,7 @@ function HomePage() {
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform active:scale-95"
           >
             <LayoutGrid className="size-4" />
-            Browse material
+            {settings.navBrowse}
           </Link>
           {canUpload ? (
             <Link
