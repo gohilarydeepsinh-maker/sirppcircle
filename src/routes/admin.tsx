@@ -32,8 +32,17 @@ export const Route = createFileRoute("/admin")({
   ),
 });
 
+type TabId = "approvals" | "content" | "users";
+
+const TABS: { id: TabId; label: string }[] = [
+  { id: "approvals", label: "Approvals" },
+  { id: "content", label: "Content" },
+  { id: "users", label: "Users" },
+];
+
 function AdminPage() {
   const { user } = useAuth();
+  const [tab, setTab] = useState<TabId>("approvals");
   const pending = useDocuments({ status: "pending", limit: 100 });
   const stats = useStats(true);
   const queryClient = useQueryClient();
