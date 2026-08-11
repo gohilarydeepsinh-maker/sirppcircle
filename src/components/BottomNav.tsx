@@ -1,24 +1,29 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, LayoutGrid, Upload, User, ShieldCheck, Crown } from "lucide-react";
+import { Home, LayoutGrid, Upload, User, ShieldCheck, Crown, Palette } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { useSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
 type NavItem = { to: string; label: string; icon: typeof Home };
 
 export function BottomNav() {
   const { role, canUpload, isStaff, isOwner } = useAuth();
+  const settings = useSettings();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   if (!role) return null;
 
   const items: NavItem[] = [
-    { to: "/home", label: "Home", icon: Home },
-    { to: "/browse", label: "Browse", icon: LayoutGrid },
+    { to: "/home", label: settings.navHome, icon: Home },
+    { to: "/browse", label: settings.navBrowse, icon: LayoutGrid },
   ];
-  if (canUpload) items.push({ to: "/upload", label: "Upload", icon: Upload });
-  if (isStaff) items.push({ to: "/admin", label: "Admin", icon: ShieldCheck });
-  if (isOwner) items.push({ to: "/owner", label: "Owner", icon: Crown });
-  items.push({ to: "/profile", label: "Profile", icon: User });
+  if (canUpload) items.push({ to: "/upload", label: settings.navUpload, icon: Upload });
+  if (isStaff) items.push({ to: "/admin", label: settings.navAdmin, icon: ShieldCheck });
+  if (isOwner) {
+    items.push({ to: "/owner", label: settings.navOwner, icon: Crown });
+    items.push({ to: "/site-editor", label: "Editor", icon: Palette });
+  }
+  items.push({ to: "/profile", label: settings.navProfile, icon: User });
 
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(1rem,env(safe-area-inset-bottom))]">

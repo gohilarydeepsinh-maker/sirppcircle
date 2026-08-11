@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Palette } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppShell, Protected } from "@/components/AppShell";
@@ -56,6 +57,21 @@ function OwnerPage() {
 
   return (
     <AppShell title="Owner control" subtitle="Roles, users and statistics">
+      <Link
+        to="/site-editor"
+        className="surface-card mb-4 flex items-center gap-3 p-4 transition-transform active:scale-[0.98]"
+      >
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <Palette className="size-4" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-semibold">Site editor</span>
+          <span className="block text-xs text-muted-foreground">
+            App name, colours, page text and navigation labels
+          </span>
+        </span>
+      </Link>
+
       <section className="grid grid-cols-3 gap-3">
         {[
           { label: "Users", value: (stats.data?.students ?? 0) + (stats.data?.captains ?? 0) + (stats.data?.admins ?? 0) },

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth";
 import { FullScreenLoader } from "@/components/AppShell";
+import { useSettings } from "@/lib/settings";
 
 export const Route = createFileRoute("/")({
   ssr: false,
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/")({
 
 function Welcome() {
   const { loading, session, profileComplete, profile } = useAuth();
+  const settings = useSettings();
   const navigate = useNavigate();
   const [signingIn, setSigningIn] = useState(false);
 
@@ -59,11 +61,8 @@ function Welcome() {
         <span className="flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-lift)]">
           <GraduationCap className="size-7" />
         </span>
-        <h1 className="mt-7 text-3xl font-bold leading-tight">Campus Notes</h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Your college study material in one calm place. Browse by semester, subject, unit and
-          topic — then read or download verified notes.
-        </p>
+        <h1 className="mt-7 text-3xl font-bold leading-tight">{settings.welcomeHeading}</h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{settings.welcomeText}</p>
 
         <div className="mt-8 space-y-3">
           <Feature
