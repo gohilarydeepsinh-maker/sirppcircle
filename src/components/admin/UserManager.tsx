@@ -9,18 +9,23 @@ import { logActivity } from "@/lib/activity";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
-export function UserManager() {
-  const { user, isOwner } = useAuth();
+export function UserManager({ scope = "admin" }: { scope?: "admin" | "owner" }) {
+  const { user } = useAuth();
+  const ownerScope = scope === "owner";
   const profiles = useProfiles(true);
   const queryClient = useQueryClient();
   const [term, setTerm] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
 
-  /** Admins may only ever touch students and captains — never admins or the owner. */
+  /**
+   * Admins may only ever touch students and captains.
+   * The owner scope also lists admins — but the owner account is never manageable.
+   */
   const manageable = useMemo(() => {
-    const rows = (profiles.data ?? []).filter(
-      (item) => item.role === "student" || item.role === "captain",
-    );
+    const allowed = ownerScope
+      ? ["student", "captain", "admin"]
+      : ["student", "captain"];
+    const rows = (profiles.data ?? []).filter((item) => allowed.includes(item.role));
     const query = term.trim().toLowerCase();
     if (!query) return rows;
     return rows.filter((item) =>
@@ -28,11 +33,11 @@ export function UserManager() {
         .filter(Boolean)
         .some((field) => String(field).toLowerCase().includes(query)),
     );
-  }, [profiles.data, term]);
+  }, [profiles.data, term, ownerScope]);
 
   const update = async (
     id: string,
-    patch: { role?: "student" | "captain"; is_active?: boolean },
+    patch: { role?: "student" | "captain" | "admin"; is_active?: boolean },
     message: string,
   ) => {
     const { error } = await supabase.from("profiles").update(patch).eq("id", id);
@@ -57,11 +62,11 @@ export function UserManager() {
         />
       </div>
 
-      {!isOwner ? (
-        <p className="text-xs text-muted-foreground">
-          Admins and the owner are not listed here and cannot be modified.
-        </p>
-      ) : null}
+      <p className="text-xs text-muted-foreground">
+        {ownerScope
+          ? "Students, captains and admins are listed here. The owner account can never be modified."
+          : "Admins and the owner are not listed here and cannot be modified."}
+      </p>
 
       {profiles.isLoading ? (
         <ListSkeleton rows={4} />
@@ -109,7 +114,7 @@ export function UserManager() {
                   <Detail label="Status" value={item.is_active ? "Active" : "Disabled"} />
                 </dl>
                 <div className="flex flex-wrap gap-2">
-                  {item.role === "captain" ? (
+                  {item.role === "admin" ? null : item.role === "captain" ? (
                     <button
                       type="button"
                       onClick={() =>
@@ -128,6 +133,27 @@ export function UserManager() {
                       Make captain
                     </button>
                   )}
+                  {ownerScope ? (
+                    item.role === "admin" ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void update(item.id, { role: "captain" }, "Admin access revoked")
+                        }
+                        className="rounded-full border border-input bg-card px-3.5 py-2 text-xs font-semibold"
+                      >
+                        Revoke admin
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => void update(item.id, { role: "admin" }, "Promoted to admin")}
+                        className="rounded-full bg-accent px-3.5 py-2 text-xs font-semibold text-accent-foreground"
+                      >
+                        Make admin
+                      </button>
+                    )
+                  ) : null}
                   <button
                     type="button"
                     onClick={() =>

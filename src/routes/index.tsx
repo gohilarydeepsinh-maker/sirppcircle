@@ -39,7 +39,7 @@ function Welcome() {
   }, [loading, session, profile, profileComplete, navigate]);
 
   if (loading) return <FullScreenLoader />;
-  if (session) return <FullScreenLoader label="Opening your study space" />;
+  if (session) return <FullScreenLoader label={settings.loadingMessage} />;
 
   const signInWithGoogle = async () => {
     setSigningIn(true);
@@ -58,10 +58,19 @@ function Welcome() {
   return (
     <div className="flex min-h-screen flex-col justify-between bg-background px-6 pb-10 pt-16">
       <div className="mx-auto w-full max-w-md animate-fade-up">
-        <span className="flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-lift)]">
-          <GraduationCap className="size-7" />
+        <span className="flex size-14 animate-float items-center justify-center overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-lift)]">
+          {settings.logoUrl ? (
+            <img src={settings.logoUrl} alt={`${settings.appName} logo`} className="size-full object-cover" />
+          ) : (
+            <GraduationCap className="size-7" />
+          )}
         </span>
-        <h1 className="mt-7 text-3xl font-bold leading-tight">{settings.welcomeHeading}</h1>
+        {settings.collegeName ? (
+          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
+            {settings.collegeName}
+          </p>
+        ) : null}
+        <h1 className="mt-2 text-3xl font-bold leading-tight">{settings.welcomeHeading}</h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{settings.welcomeText}</p>
 
         <div className="mt-8 space-y-3">
@@ -88,20 +97,20 @@ function Welcome() {
           type="button"
           onClick={signInWithGoogle}
           disabled={signingIn}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-lift)] transition-transform active:scale-[0.98] disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-lift)] press disabled:opacity-70"
         >
           {signingIn ? <Loader2 className="size-4 animate-spin" /> : <GoogleMark />}
-          {signingIn ? "Signing in" : "Continue with Google"}
+          {signingIn ? "Signing in" : settings.loginButtonText}
         </button>
         <Link
           to="/admin-login"
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-input bg-card px-6 py-3.5 text-sm font-semibold text-foreground transition-transform active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-input bg-card px-6 py-3.5 text-sm font-semibold text-foreground press"
         >
           <ShieldCheck className="size-4" />
-          Admin Login
+          {settings.loginAdminButtonText}
         </Link>
         <p className="pt-1 text-center text-xs text-muted-foreground">
-          Students and captains sign in with their college Google account.
+          {settings.loginFooterText}
         </p>
       </div>
     </div>

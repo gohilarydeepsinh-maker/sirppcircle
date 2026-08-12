@@ -69,17 +69,21 @@ export function sanitizeFileName(fileName: string) {
   return `${base || "file"}${ext ? `.${ext}` : ""}`;
 }
 
-export function validateFile(file: File): string | null {
+export function validateFile(file: File, maxMb?: number): string | null {
+  const limitBytes =
+    maxMb && Number.isFinite(maxMb) && maxMb > 0 ? maxMb * 1024 * 1024 : MAX_FILE_BYTES;
   const ext = extensionOf(file.name);
   if (!ext) return "This file has no extension and cannot be uploaded.";
   if (BLOCKED_EXTENSIONS.includes(ext)) return "This file type is not allowed.";
   if (!(ALLOWED_EXTENSIONS as readonly string[]).includes(ext))
     return `Unsupported file type ".${ext}". Allowed: ${ALLOWED_EXTENSIONS.join(", ")}.`;
   if (file.size === 0) return "This file is empty.";
-  if (file.size > MAX_FILE_BYTES) return "File is too large. Maximum size is 50 MB.";
+  if (file.size > limitBytes)
+    return `File is too large. Maximum size is ${Math.round(limitBytes / (1024 * 1024))} MB.`;
   if (file.name.length > 150) return "File name is too long.";
   return null;
 }
+
 
 /** Coarse category used for filtering + icons. */
 export function fileCategory(fileType: string): string {

@@ -5,53 +5,145 @@ import { supabase } from "@/integrations/supabase/client";
 export const SETTINGS_KEY = "global";
 
 export type AppSettings = {
+  /* Brand */
   appName: string;
   collegeName: string;
   tagline: string;
+  logoUrl: string;
+  faviconUrl: string;
+
+  /* Appearance */
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  backgroundColor: string;
+  textColor: string;
+  cardRadius: number;
+  shadowIntensity: number;
+
+  /* Login screen */
   welcomeHeading: string;
   welcomeText: string;
+  loginButtonText: string;
+  loginAdminButtonText: string;
+  loginFooterText: string;
+
+  /* Home screen */
   homeHeading: string;
   homeText: string;
+  homeAnnouncement: string;
+  homeGreetingPrefix: string;
+  sectionSemestersTitle: string;
+  sectionRecentTitle: string;
+  showHomeHero: boolean;
+  showQuickActions: boolean;
+  showSemesters: boolean;
+  showRecent: boolean;
+
+  /* Navigation */
   navHome: string;
   navBrowse: string;
   navUpload: string;
   navAdmin: string;
   navOwner: string;
   navProfile: string;
-  primaryColor: string;
-  accentColor: string;
-  backgroundColor: string;
-  logoUrl: string;
+
+  /* Shared copy */
+  emptyStateMessage: string;
+  loadingMessage: string;
+
+  /* Uploads */
+  uploadInstructions: string;
+  labelUnit: string;
+  labelTopic: string;
+  maxFileSizeMb: number;
+  captainUploadEnabled: boolean;
+  captainUploadRequiresApproval: boolean;
+  showDescriptionField: boolean;
+  requireDescription: boolean;
+
+  /* Filters shown to students */
+  filterSearchEnabled: boolean;
+  filterTypeEnabled: boolean;
+  filterRecentEnabled: boolean;
+  filterTypeLabel: string;
+  filterRecentLabel: string;
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
   appName: "Campus Notes",
   collegeName: "",
   tagline: "College study material",
+  logoUrl: "",
+  faviconUrl: "",
+
+  primaryColor: "",
+  secondaryColor: "",
+  accentColor: "",
+  backgroundColor: "",
+  textColor: "",
+  cardRadius: 14,
+  shadowIntensity: 100,
+
   welcomeHeading: "Campus Notes",
   welcomeText:
     "Your college study material in one calm place. Browse by semester, subject, unit and topic — then read or download verified notes.",
+  loginButtonText: "Continue with Google",
+  loginAdminButtonText: "Admin Login",
+  loginFooterText: "Students and captains sign in with their college Google account.",
+
   homeHeading: "Everything you need for this semester",
-  homeText:
-    "Browse by semester, subject, unit and topic — or jump straight to the newest notes.",
+  homeText: "Browse by semester, subject, unit and topic — or jump straight to the newest notes.",
+  homeAnnouncement: "",
+  homeGreetingPrefix: "",
+  sectionSemestersTitle: "Semesters",
+  sectionRecentTitle: "Recently added",
+  showHomeHero: true,
+  showQuickActions: true,
+  showSemesters: true,
+  showRecent: true,
+
   navHome: "Home",
   navBrowse: "Browse",
   navUpload: "Upload",
   navAdmin: "Admin",
   navOwner: "Owner",
   navProfile: "Profile",
-  primaryColor: "",
-  accentColor: "",
-  backgroundColor: "",
-  logoUrl: "",
+
+  emptyStateMessage: "Approved notes will appear here as soon as they are published.",
+  loadingMessage: "Loading your study space",
+
+  uploadInstructions: "Type the unit and topic name exactly as it should appear to students.",
+  labelUnit: "Unit name",
+  labelTopic: "Topic name",
+  maxFileSizeMb: 50,
+  captainUploadEnabled: true,
+  captainUploadRequiresApproval: true,
+  showDescriptionField: true,
+  requireDescription: false,
+
+  filterSearchEnabled: true,
+  filterTypeEnabled: true,
+  filterRecentEnabled: true,
+  filterTypeLabel: "File type",
+  filterRecentLabel: "Recently added",
 };
 
 function merge(value: unknown): AppSettings {
-  const raw = (value ?? {}) as Partial<Record<keyof AppSettings, unknown>>;
+  const raw = (value ?? {}) as Record<string, unknown>;
   const out = { ...DEFAULT_SETTINGS };
   for (const key of Object.keys(DEFAULT_SETTINGS) as (keyof AppSettings)[]) {
     const next = raw[key];
-    if (typeof next === "string" && next.trim().length > 0) out[key] = next;
+    const fallback = DEFAULT_SETTINGS[key];
+    if (typeof fallback === "string") {
+      if (typeof next === "string" && next.trim().length > 0) {
+        (out[key] as string) = next;
+      }
+    } else if (typeof fallback === "boolean") {
+      if (typeof next === "boolean") (out[key] as boolean) = next;
+    } else if (typeof fallback === "number") {
+      if (typeof next === "number" && Number.isFinite(next)) (out[key] as number) = next;
+    }
   }
   return out;
 }
@@ -90,29 +182,42 @@ export function useSaveSettings() {
 
 const SettingsContext = createContext<AppSettings>(DEFAULT_SETTINGS);
 
-/** Applies owner-defined colours to the live theme. */
+/** Applies owner-defined colours, radius and depth to the live theme. */
 function applyTheme(settings: AppSettings) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
   const pairs: [string, string][] = [
     ["--primary", settings.primaryColor],
     ["--ring", settings.primaryColor],
+    ["--secondary", settings.secondaryColor],
     ["--accent", settings.accentColor],
     ["--background", settings.backgroundColor],
+    ["--foreground", settings.textColor],
   ];
   for (const [name, value] of pairs) {
     if (value) root.style.setProperty(name, value);
     else root.style.removeProperty(name);
   }
-  if (settings.primaryColor) {
-    root.style.setProperty("--primary-foreground", readableOn(settings.primaryColor));
-  } else {
-    root.style.removeProperty("--primary-foreground");
+  const readablePairs: [string, string][] = [
+    ["--primary-foreground", settings.primaryColor],
+    ["--secondary-foreground", settings.secondaryColor],
+    ["--accent-foreground", settings.accentColor],
+  ];
+  for (const [name, source] of readablePairs) {
+    if (source) root.style.setProperty(name, readableOn(source));
+    else root.style.removeProperty(name);
   }
-  if (settings.accentColor) {
-    root.style.setProperty("--accent-foreground", readableOn(settings.accentColor));
-  } else {
-    root.style.removeProperty("--accent-foreground");
+  root.style.setProperty("--radius", `${settings.cardRadius / 16}rem`);
+  root.style.setProperty("--depth", String(Math.max(0, settings.shadowIntensity) / 100));
+
+  if (settings.faviconUrl) {
+    let link = document.querySelector<HTMLLinkElement>("link[rel='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.href = settings.faviconUrl;
   }
 }
 
