@@ -164,18 +164,19 @@ function UploadPage() {
 
     setBusy(true);
 
-    const unit = await findOrCreate("units", "subject_id", subjectId, unitName);
-    if ("error" in unit) {
-      toast.error(unit.error);
+    const unit = await findOrCreateUnit(subjectId, unitName);
+    if ("error" in unit || !unit.id) {
+      toast.error("error" in unit ? unit.error : "Could not resolve the unit.");
       setBusy(false);
       return;
     }
-    const topic = await findOrCreate("topics", "unit_id", unit.id, topicName);
-    if ("error" in topic) {
-      toast.error(topic.error);
+    const topic = await findOrCreateTopic(unit.id, topicName);
+    if ("error" in topic || !topic.id) {
+      toast.error("error" in topic ? topic.error : "Could not resolve the topic.");
       setBusy(false);
       return;
     }
+
 
     const safeName = sanitizeFileName(file.name);
     const path = `${semesterId}/${subjectId}/${unit.id}/${topic.id}/${Date.now()}-${safeName}`;
