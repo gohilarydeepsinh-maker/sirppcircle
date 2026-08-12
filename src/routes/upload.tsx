@@ -32,50 +32,82 @@ const inputClass =
 const labelClass =
   "mt-4 block text-xs font-semibold uppercase tracking-wide text-muted-foreground";
 
-/** Finds a row by name inside a parent, creating it when it does not exist yet. */
-async function findOrCreate(
-  table: "units" | "topics",
-  parentColumn: "subject_id" | "unit_id",
-  parentId: string,
-  name: string,
-): Promise<{ id: string } | { error: string }> {
+/** Finds a unit by typed name inside a subject, creating it when missing. */
+async function findOrCreateUnit(subjectId: string, name: string) {
   const trimmed = name.trim();
   const existing = await supabase
-    .from(table)
+    .from("units")
     .select("id")
-    .eq(parentColumn, parentId)
+    .eq("subject_id", subjectId)
     .ilike("name", trimmed)
     .maybeSingle();
   if (existing.data?.id) return { id: existing.data.id };
 
   const last = await supabase
-    .from(table)
+    .from("units")
     .select("display_order")
-    .eq(parentColumn, parentId)
+    .eq("subject_id", subjectId)
     .order("display_order", { ascending: false })
     .limit(1)
     .maybeSingle();
 
   const created = await supabase
-    .from(table)
+    .from("units")
     .insert({
       name: trimmed,
       display_order: (last.data?.display_order ?? 0) + 1,
-      [parentColumn]: parentId,
-    } as never)
+      subject_id: subjectId,
+    })
     .select("id")
     .maybeSingle();
 
   if (created.error || !created.data) {
     return {
       error:
-        table === "units"
-          ? "This unit does not exist yet and you do not have permission to create it. Ask an admin to add it."
-          : "This topic does not exist yet and you do not have permission to create it. Ask an admin to add it.",
+        "This unit does not exist yet and you do not have permission to create it. Ask an admin to add it.",
     };
   }
   return { id: created.data.id };
 }
+
+/** Finds a topic by typed name inside a unit, creating it when missing. */
+async function findOrCreateTopic(unitId: string, name: string) {
+  const trimmed = name.trim();
+  const existing = await supabase
+    .from("topics")
+    .select("id")
+    .eq("unit_id", unitId)
+    .ilike("name", trimmed)
+    .maybeSingle();
+  if (existing.data?.id) return { id: existing.data.id };
+
+  const last = await supabase
+    .from("topics")
+    .select("display_order")
+    .eq("unit_id", unitId)
+    .order("display_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const created = await supabase
+    .from("topics")
+    .insert({
+      name: trimmed,
+      display_order: (last.data?.display_order ?? 0) + 1,
+      unit_id: unitId,
+    })
+    .select("id")
+    .maybeSingle();
+
+  if (created.error || !created.data) {
+    return {
+      error:
+        "This topic does not exist yet and you do not have permission to create it. Ask an admin to add it.",
+    };
+  }
+  return { id: created.data.id };
+}
+
 
 function UploadPage() {
   const { user, isStaff } = useAuth();
