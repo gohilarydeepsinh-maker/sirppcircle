@@ -114,7 +114,7 @@ export function UserManager({ scope = "admin" }: { scope?: "admin" | "owner" }) 
                   <Detail label="Status" value={item.is_active ? "Active" : "Disabled"} />
                 </dl>
                 <div className="flex flex-wrap gap-2">
-                  {item.role === "captain" ? (
+                  {item.role === "admin" ? null : item.role === "captain" ? (
                     <button
                       type="button"
                       onClick={() =>
