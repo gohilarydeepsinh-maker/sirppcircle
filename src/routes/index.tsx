@@ -6,6 +6,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth";
 import { FullScreenLoader } from "@/components/AppShell";
 import { useSettings } from "@/lib/settings";
+import { AppLogo } from "@/components/AppLogo";
 
 export const Route = createFileRoute("/")({
   ssr: false,
@@ -58,13 +59,10 @@ function Welcome() {
   return (
     <div className="flex min-h-screen flex-col justify-between bg-background px-6 pb-10 pt-16">
       <div className="mx-auto w-full max-w-md animate-fade-up">
-        <span className="flex size-14 animate-float items-center justify-center overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-lift)]">
-          {settings.logoUrl ? (
-            <img src={settings.logoUrl} alt={`${settings.appName} logo`} className="size-full object-cover" />
-          ) : (
-            <GraduationCap className="size-7" />
-          )}
-        </span>
+        <AppLogo
+          className="size-14 animate-float rounded-2xl shadow-[var(--shadow-lift)]"
+          iconClassName="size-7"
+        />
         {settings.collegeName ? (
           <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
             {settings.collegeName}

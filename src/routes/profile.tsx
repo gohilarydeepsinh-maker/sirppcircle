@@ -7,6 +7,8 @@ import { EmptyState, ListSkeleton } from "@/components/EmptyState";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useMyUploads } from "@/lib/data";
+import { UserAvatar } from "@/components/AppLogo";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/profile")({
   ssr: false,
@@ -43,17 +45,11 @@ function ProfilePage() {
     <AppShell title="My profile" subtitle={profile?.email ?? undefined}>
       <section className="surface-card p-5">
         <div className="flex items-center gap-3">
-          {profile?.avatar_url ? (
-            <img
-              src={profile.avatar_url}
-              alt={profile.name ?? "Profile photo"}
-              className="size-14 rounded-2xl object-cover"
-            />
-          ) : (
-            <span className="flex size-14 items-center justify-center rounded-2xl bg-primary text-lg font-bold text-primary-foreground">
-              {(profile?.name ?? "S").charAt(0).toUpperCase()}
-            </span>
-          )}
+          <UserAvatar
+            name={profile?.name}
+            url={profile?.avatar_url}
+            className="size-14 rounded-2xl"
+          />
           <div className="min-w-0">
             <p className="truncate text-base font-bold">{profile?.name ?? "Student"}</p>
             <p className="truncate text-xs text-muted-foreground">{profile?.email}</p>
@@ -76,6 +72,20 @@ function ProfilePage() {
             <dd className="mt-0.5 truncate font-medium">{profile?.subject ?? "—"}</dd>
           </div>
         </dl>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <Link
+            to="/complete-profile"
+            className="press inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-2.5 text-sm font-semibold"
+          >
+            Edit profile
+          </Link>
+          <Link
+            to="/students"
+            className="press inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-2.5 text-sm font-semibold"
+          >
+            Student directory
+          </Link>
+        </div>
         <button
           type="button"
           onClick={handleSignOut}
