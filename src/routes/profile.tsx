@@ -73,13 +73,12 @@ function ProfilePage() {
           </div>
         </dl>
         <div className="mt-5 flex flex-wrap gap-2">
-          <Link
-            to="/complete-profile"
-            search={{ edit: "1" }}
+          <a
+            href="/complete-profile?edit=1"
             className="press inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-2.5 text-sm font-semibold"
           >
             Edit profile
-          </Link>
+          </a>
           <Link
             to="/students"
             className="press inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-2.5 text-sm font-semibold"
