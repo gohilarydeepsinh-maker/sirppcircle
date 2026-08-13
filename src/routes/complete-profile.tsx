@@ -34,6 +34,8 @@ function CompleteProfile() {
   const { loading, session, profile, profileComplete, refreshProfile } = useAuth();
   const settings = useSettings();
   const navigate = useNavigate();
+  const editing =
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("edit");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState("");
@@ -50,8 +52,8 @@ function CompleteProfile() {
   useEffect(() => {
     if (loading) return;
     if (!session) void navigate({ to: "/", replace: true });
-    else if (profileComplete) void navigate({ to: "/home", replace: true });
-  }, [loading, session, profileComplete, navigate]);
+    else if (profileComplete && !editing) void navigate({ to: "/home", replace: true });
+  }, [loading, session, profileComplete, editing, navigate]);
 
   useEffect(() => {
     if (!profile) return;
@@ -136,7 +138,7 @@ function CompleteProfile() {
         <span className="flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
           <UserRound className="size-6" />
         </span>
-        <h1 className="mt-5 text-xl font-bold">Complete your profile</h1>
+        <h1 className="mt-5 text-xl font-bold">{editing ? "Edit your profile" : "Complete your profile"}</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
           This is how classmates will find you in the {settings.appName} directory.
         </p>
