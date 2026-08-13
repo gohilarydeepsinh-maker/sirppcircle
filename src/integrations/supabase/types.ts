@@ -174,9 +174,12 @@ export type Database = {
           id: string
           is_active: boolean
           name: string | null
+          profile_completed: boolean
           role: Database["public"]["Enums"]["app_role"]
           roll_number: string | null
+          semester_id: string | null
           subject: string | null
+          subject_id: string | null
           updated_at: string
         }
         Insert: {
@@ -186,9 +189,12 @@ export type Database = {
           id: string
           is_active?: boolean
           name?: string | null
+          profile_completed?: boolean
           role?: Database["public"]["Enums"]["app_role"]
           roll_number?: string | null
+          semester_id?: string | null
           subject?: string | null
+          subject_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -198,12 +204,30 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string | null
+          profile_completed?: boolean
           role?: Database["public"]["Enums"]["app_role"]
           roll_number?: string | null
+          semester_id?: string | null
           subject?: string | null
+          subject_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_semester_id_fkey"
+            columns: ["semester_id"]
+            isOneToOne: false
+            referencedRelation: "semesters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       semesters: {
         Row: {
@@ -340,6 +364,19 @@ export type Database = {
     }
     Functions: {
       can_upload: { Args: { _uid: string }; Returns: boolean }
+      directory_students: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["app_role"]
+          roll_number: string
+          semester_id: string
+          subject: string
+          subject_id: string
+        }[]
+      }
       has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _uid: string }
         Returns: boolean

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RotateCcw, Save } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell, Protected } from "@/components/AppShell";
@@ -14,6 +14,8 @@ import {
 } from "@/lib/settings";
 import { logActivity } from "@/lib/activity";
 import { useAuth } from "@/lib/auth";
+import { AppLogo } from "@/components/AppLogo";
+import { uploadBrandingImage, useAssetUrl, validateImage } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/site-editor")({
@@ -216,6 +218,10 @@ function SiteEditorPage() {
         {tab === "appearance" ? (
           <>
             <Section title="Brand">
+              <LogoUpload
+                value={draft.logoUrl}
+                onChange={(next) => setText("logoUrl", next)}
+              />
               {BRAND.map((field) => (
                 <TextInput
                   key={field.key}
@@ -517,5 +523,75 @@ function TextInput({
         />
       )}
     </label>
+  );
+}
+
+/** Owner-only college logo upload. Stores a private storage reference. */
+function LogoUpload({ value, onChange }: { value: string; onChange: (next: string) => void }) {
+  const preview = useAssetUrl(value);
+  const [busy, setBusy] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const pick = async (file: File | undefined) => {
+    if (!file) return;
+    const problem = validateImage(file, 4);
+    if (problem) {
+      toast.error(problem);
+      return;
+    }
+    setBusy(true);
+    try {
+      const ref = await uploadBrandingImage(file, "logo");
+      onChange(ref);
+      toast.success("Logo uploaded — press Save to publish it");
+    } catch (error) {
+      console.error(error);
+      toast.error("Could not upload the logo.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      <span className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border bg-card">
+        {preview ? (
+          <img src={preview} alt="College logo" className="size-full object-contain" />
+        ) : (
+          <AppLogo className="size-full rounded-2xl" iconClassName="size-7" />
+        )}
+      </span>
+      <div className="min-w-0">
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={busy}
+            className="press inline-flex items-center gap-2 rounded-full border border-input bg-card px-4 py-2 text-xs font-semibold disabled:opacity-60"
+          >
+            {busy ? "Uploading" : value ? "Replace logo" : "Upload logo"}
+          </button>
+          {value ? (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="press inline-flex items-center gap-2 rounded-full border border-input bg-card px-4 py-2 text-xs font-semibold text-muted-foreground"
+            >
+              Remove
+            </button>
+          ) : null}
+        </div>
+        <p className="mt-1.5 text-[0.7rem] text-muted-foreground">
+          Shown on the login screen, every page header and the app icon area.
+        </p>
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+        className="hidden"
+        onChange={(event) => void pick(event.target.files?.[0])}
+      />
+    </div>
   );
 }

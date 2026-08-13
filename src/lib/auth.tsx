@@ -115,7 +115,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       profile,
       role,
       loading,
-      profileComplete: Boolean(profile?.name && profile?.roll_number),
+      profileComplete: Boolean(
+        profile &&
+          (profile.profile_completed ||
+            (profile.name && profile.roll_number && profile.subject_id && profile.semester_id)),
+      ),
       canUpload: role === "captain" || role === "admin" || role === "owner",
       isStaff: role === "admin" || role === "owner",
       isOwner: role === "owner",

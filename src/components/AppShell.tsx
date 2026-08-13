@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, GraduationCap, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { useAuth, type Role } from "@/lib/auth";
 import { BottomNav } from "@/components/BottomNav";
+import { AppLogo } from "@/components/AppLogo";
 import { cn } from "@/lib/utils";
 
 export function FullScreenLoader({ label = "Loading" }: { label?: string }) {
@@ -127,9 +128,7 @@ export function AppShell({
               <ChevronLeft className="size-5" />
             </button>
           ) : (
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <GraduationCap className="size-5" />
-            </span>
+            <AppLogo className="rounded-full" />
           )}
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-base font-semibold leading-tight">{title}</h1>

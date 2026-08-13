@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, LayoutGrid, Upload, User, ShieldCheck, Crown, Palette } from "lucide-react";
+import { Home, LayoutGrid, Upload, User, ShieldCheck, Crown, Palette, Users } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ export function BottomNav() {
   const items: NavItem[] = [
     { to: "/home", label: settings.navHome, icon: Home },
     { to: "/browse", label: settings.navBrowse, icon: LayoutGrid },
+    { to: "/students", label: "Students", icon: Users },
   ];
   if (canUpload) items.push({ to: "/upload", label: settings.navUpload, icon: Upload });
   if (isStaff) items.push({ to: "/admin", label: settings.navAdmin, icon: ShieldCheck });
