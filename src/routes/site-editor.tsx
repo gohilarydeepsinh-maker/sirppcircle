@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RotateCcw, Save } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell, Protected } from "@/components/AppShell";
@@ -14,7 +14,7 @@ import {
 } from "@/lib/settings";
 import { logActivity } from "@/lib/activity";
 import { useAuth } from "@/lib/auth";
-import { AppLogo, UserAvatar } from "@/components/AppLogo";
+import { AppLogo } from "@/components/AppLogo";
 import { uploadBrandingImage, useAssetUrl, validateImage } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
