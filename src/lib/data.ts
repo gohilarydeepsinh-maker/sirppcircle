@@ -252,3 +252,19 @@ export function useInvalidateAll() {
 }
 
 export { useMutation };
+
+export type DirectoryStudent =
+  Database["public"]["Functions"]["directory_students"]["Returns"][number];
+
+/** Signed-in members can see a safe subset of every completed profile. */
+export function useStudentDirectory() {
+  return useQuery({
+    queryKey: ["student-directory"],
+    staleTime: 60_000,
+    queryFn: async (): Promise<DirectoryStudent[]> => {
+      const { data, error } = await supabase.rpc("directory_students");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
