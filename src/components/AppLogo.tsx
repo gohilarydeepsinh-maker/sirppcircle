@@ -8,8 +8,8 @@ export function AppLogo({
   className,
   iconClassName,
 }: {
-  className?: string;
-  iconClassName?: string;
+  className?: string | undefined;
+  iconClassName?: string | undefined;
 }) {
   const settings = useSettings();
   const src = useAssetUrl(settings.logoUrl);
@@ -41,9 +41,9 @@ export function UserAvatar({
   url,
   className,
 }: {
-  name?: string | null;
-  url?: string | null;
-  className?: string;
+  name?: string | null | undefined;
+  url?: string | null | undefined;
+  className?: string | undefined;
 }) {
   const src = useAssetUrl(url);
   return src ? (
