@@ -166,6 +166,130 @@ export type Database = {
           },
         ]
       }
+      notification_reads: {
+        Row: {
+          closed_at: string | null
+          id: string
+          notification_id: string
+          seen_at: string
+          user_id: string
+        }
+        Insert: {
+          closed_at?: string | null
+          id?: string
+          notification_id: string
+          seen_at?: string
+          user_id: string
+        }
+        Update: {
+          closed_at?: string | null
+          id?: string
+          notification_id?: string
+          seen_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_reads_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_reads_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          audience: Database["public"]["Enums"]["notif_audience"]
+          auto_popup: boolean
+          button_text: string | null
+          created_at: string
+          created_by: string | null
+          ends_at: string | null
+          id: string
+          image_path: string | null
+          message: string
+          priority: number
+          semester_id: string | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["notif_status"]
+          subject_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["notif_type"]
+          updated_at: string
+        }
+        Insert: {
+          action_url?: string | null
+          audience?: Database["public"]["Enums"]["notif_audience"]
+          auto_popup?: boolean
+          button_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          image_path?: string | null
+          message: string
+          priority?: number
+          semester_id?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["notif_status"]
+          subject_id?: string | null
+          title: string
+          type?: Database["public"]["Enums"]["notif_type"]
+          updated_at?: string
+        }
+        Update: {
+          action_url?: string | null
+          audience?: Database["public"]["Enums"]["notif_audience"]
+          auto_popup?: boolean
+          button_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          image_path?: string | null
+          message?: string
+          priority?: number
+          semester_id?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["notif_status"]
+          subject_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["notif_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_semester_id_fkey"
+            columns: ["semester_id"]
+            isOneToOne: false
+            referencedRelation: "semesters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -390,6 +514,9 @@ export type Database = {
     Enums: {
       app_role: "student" | "captain" | "admin" | "owner"
       doc_status: "pending" | "approved" | "rejected"
+      notif_audience: "all_users" | "all_students" | "semester" | "subject"
+      notif_status: "draft" | "published"
+      notif_type: "announcement" | "important" | "update" | "material" | "event"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -519,6 +646,9 @@ export const Constants = {
     Enums: {
       app_role: ["student", "captain", "admin", "owner"],
       doc_status: ["pending", "approved", "rejected"],
+      notif_audience: ["all_users", "all_students", "semester", "subject"],
+      notif_status: ["draft", "published"],
+      notif_type: ["announcement", "important", "update", "material", "event"],
     },
   },
 } as const
