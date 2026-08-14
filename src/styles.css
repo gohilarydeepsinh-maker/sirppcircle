@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system — "Academic Premium"
- * Deep academic navy + calm slate + warm paper background.
+ * Design system — "Campus Glass"
+ * Deep royal blue / indigo / violet ambient base with translucent glass surfaces.
  * All colors are oklch semantic tokens. Never hardcode colors in components.
  */
 
@@ -54,23 +54,26 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --shadow-card: 0 1px 2px oklch(0.28 0.07 262 / calc(0.06 * var(--depth, 1))),
-    0 8px 24px -12px oklch(0.28 0.07 262 / calc(0.14 * var(--depth, 1)));
-  --shadow-lift:
-    0 2px 6px oklch(0.28 0.07 262 / 0.08), 0 18px 40px -18px oklch(0.28 0.07 262 / 0.28);
-  --shadow-nav: 0 8px 30px -8px oklch(0.42 0.16 258 / 0.5), 0 2px 8px oklch(0.28 0.07 262 / 0.18);
+  --shadow-card: 0 1px 0 oklch(1 0 0 / 0.12) inset,
+    0 18px 40px -22px oklch(0.12 0.06 265 / calc(0.75 * var(--depth, 1)));
+  --shadow-lift: 0 1px 0 oklch(1 0 0 / 0.18) inset,
+    0 26px 60px -24px oklch(0.1 0.06 265 / 0.8);
+  --shadow-nav: 0 10px 34px -8px oklch(0.45 0.2 268 / 0.65),
+    0 2px 10px oklch(0.12 0.06 265 / 0.4);
 
-  --animate-fade-up: fade-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-up: fade-up 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in: fade-in 0.25s ease-out both;
-  --animate-pop: pop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  --animate-float: float 6s ease-in-out infinite;
+  --animate-pop: pop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float: float 8s ease-in-out infinite;
+  --animate-drift: drift 26s ease-in-out infinite;
+  --animate-sheet-in: sheet-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   --ease-spring: cubic-bezier(0.34, 1.42, 0.64, 1);
 }
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 12px, 0);
   }
   to {
     opacity: 1;
@@ -91,64 +94,94 @@
     transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate3d(0, -6px, 0);
+    transform: translate3d(0, -8px, 0);
+  }
+}
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(4%, -6%, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-5%, 4%, 0) scale(0.95);
   }
 }
 @keyframes pop {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
     transform: scale(1);
   }
 }
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 :root {
-  --radius: 0.875rem;
+  --radius: 1rem;
 
-  --background: oklch(0.985 0.006 90);
-  --foreground: oklch(0.24 0.035 262);
+  /* Deep royal blue base */
+  --background: oklch(0.19 0.055 266);
+  --foreground: oklch(0.97 0.01 260);
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.035 262);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.035 262);
+  /* Translucent glass surfaces */
+  --card: oklch(1 0 0 / 0.09);
+  --card-foreground: oklch(0.97 0.01 260);
+  --popover: oklch(0.24 0.06 268 / 0.96);
+  --popover-foreground: oklch(0.97 0.01 260);
 
-  --primary: oklch(0.44 0.16 258);
-  --primary-foreground: oklch(0.985 0.005 250);
+  --primary: oklch(0.63 0.2 274);
+  --primary-foreground: oklch(0.99 0.005 260);
 
-  --secondary: oklch(0.955 0.012 250);
-  --secondary-foreground: oklch(0.32 0.05 260);
+  --secondary: oklch(1 0 0 / 0.1);
+  --secondary-foreground: oklch(0.96 0.01 260);
 
-  --muted: oklch(0.958 0.008 250);
-  --muted-foreground: oklch(0.52 0.03 258);
+  --muted: oklch(1 0 0 / 0.08);
+  --muted-foreground: oklch(0.8 0.03 265);
 
-  --accent: oklch(0.93 0.035 250);
-  --accent-foreground: oklch(0.34 0.08 258);
+  --accent: oklch(1 0 0 / 0.14);
+  --accent-foreground: oklch(0.96 0.02 260);
 
-  --destructive: oklch(0.56 0.2 25);
+  --destructive: oklch(0.62 0.2 22);
   --destructive-foreground: oklch(0.99 0.005 90);
 
-  --success: oklch(0.56 0.13 155);
-  --success-foreground: oklch(0.99 0.005 90);
+  --success: oklch(0.72 0.15 158);
+  --success-foreground: oklch(0.18 0.05 200);
 
-  --warning: oklch(0.75 0.14 72);
-  --warning-foreground: oklch(0.26 0.05 60);
+  --warning: oklch(0.82 0.14 82);
+  --warning-foreground: oklch(0.24 0.06 60);
 
-  --border: oklch(0.9 0.012 255);
-  --input: oklch(0.9 0.012 255);
-  --ring: oklch(0.44 0.16 258);
+  --border: oklch(1 0 0 / 0.16);
+  --input: oklch(1 0 0 / 0.2);
+  --ring: oklch(0.7 0.16 268);
 
-  --sidebar: oklch(0.975 0.008 250);
-  --sidebar-foreground: oklch(0.24 0.035 262);
-  --sidebar-primary: oklch(0.44 0.16 258);
-  --sidebar-primary-foreground: oklch(0.985 0.005 250);
-  --sidebar-accent: oklch(0.93 0.035 250);
-  --sidebar-accent-foreground: oklch(0.34 0.08 258);
-  --sidebar-border: oklch(0.9 0.012 255);
-  --sidebar-ring: oklch(0.44 0.16 258);
+  --sidebar: oklch(1 0 0 / 0.07);
+  --sidebar-foreground: oklch(0.97 0.01 260);
+  --sidebar-primary: oklch(0.63 0.2 274);
+  --sidebar-primary-foreground: oklch(0.99 0.005 260);
+  --sidebar-accent: oklch(1 0 0 / 0.14);
+  --sidebar-accent-foreground: oklch(0.96 0.02 260);
+  --sidebar-border: oklch(1 0 0 / 0.16);
+  --sidebar-ring: oklch(0.7 0.16 268);
+
+  /* Ambient accents used by the background system */
+  --glow-indigo: oklch(0.52 0.22 274);
+  --glow-violet: oklch(0.55 0.24 305);
+  --glow-cyan: oklch(0.72 0.14 210);
+  --glow-gold: oklch(0.82 0.14 82);
 }
 
 @layer base {
@@ -158,6 +191,7 @@
 
   html {
     -webkit-tap-highlight-color: transparent;
+    background-color: var(--color-background);
   }
 
   body {
@@ -175,6 +209,12 @@
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
+
+  /* Native controls inside glass surfaces */
+  select option {
+    background-color: oklch(0.22 0.06 268);
+    color: oklch(0.97 0.01 260);
+  }
 }
 
 @utility page-shell {
@@ -185,40 +225,107 @@
   padding-bottom: 7.5rem;
 }
 
+/* Primary glass surface (level 1) */
 @utility surface-card {
-  background-color: var(--color-card);
-  border: 1px solid var(--color-border);
+  background: linear-gradient(
+    160deg,
+    oklch(1 0 0 / 0.15) 0%,
+    oklch(1 0 0 / 0.07) 55%,
+    oklch(1 0 0 / 0.05) 100%
+  );
+  border: 1px solid oklch(1 0 0 / 0.16);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
 }
 
-/* Document-style form control */
+/* Deeper, more transparent glass (level 0 — containers) */
+@utility glass-panel {
+  background: oklch(1 0 0 / 0.06);
+  border: 1px solid oklch(1 0 0 / 0.12);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+}
+
+/* Feature / hero glass (level 2 — brightest) */
+@utility glass-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 120% at 0% 0%, oklch(1 0 0 / 0.16), transparent 60%),
+    linear-gradient(155deg, oklch(1 0 0 / 0.16) 0%, oklch(1 0 0 / 0.06) 100%);
+  border: 1px solid oklch(1 0 0 / 0.2);
+  border-radius: var(--radius-3xl);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Kept for backwards compatibility with existing screens */
+@utility academic-surface {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 120% at 0% 0%, oklch(1 0 0 / 0.15), transparent 60%),
+    linear-gradient(155deg, oklch(1 0 0 / 0.15) 0%, oklch(1 0 0 / 0.06) 100%);
+  border: 1px solid oklch(1 0 0 / 0.2);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+}
+
+@utility glass-chip {
+  background: oklch(1 0 0 / 0.1);
+  border: 1px solid oklch(1 0 0 / 0.16);
+  border-radius: 999px;
+  color: var(--color-foreground);
+}
+
+@utility glass-chip-active {
+  background: linear-gradient(
+    140deg,
+    color-mix(in oklab, var(--primary) 70%, transparent),
+    color-mix(in oklab, var(--glow-violet) 55%, transparent)
+  );
+  border: 1px solid oklch(1 0 0 / 0.3);
+  border-radius: 999px;
+  color: var(--color-primary-foreground);
+  box-shadow: 0 6px 20px -8px color-mix(in oklab, var(--primary) 80%, transparent);
+}
+
+/* Glass form control */
 @utility input-field {
   width: 100%;
-  border: 1px solid var(--color-input);
-  background-color: var(--color-card);
+  border: 1px solid oklch(1 0 0 / 0.18);
+  background-color: oklch(1 0 0 / 0.08);
   border-radius: var(--radius-md);
-  padding: 0.7rem 0.9rem;
+  padding: 0.72rem 0.9rem;
   font-size: 0.875rem;
   color: var(--color-foreground);
   outline: none;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out,
+    background-color 0.18s ease-out;
+  &::placeholder {
+    color: var(--color-muted-foreground);
+  }
   &:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 18%, transparent);
+    border-color: color-mix(in oklab, var(--primary) 70%, transparent);
+    background-color: oklch(1 0 0 / 0.12);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 26%, transparent);
   }
 }
 
-/* Liquid navigation — the ONLY glassmorphic surface in the app */
+/* Blue liquid navigation — the signature surface of the app */
 @utility liquid-nav {
   background: linear-gradient(
     140deg,
-    oklch(0.5 0.17 258 / 0.82) 0%,
-    oklch(0.42 0.15 262 / 0.86) 100%
+    oklch(0.56 0.19 268 / 0.55) 0%,
+    oklch(0.4 0.17 278 / 0.62) 100%
   );
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  border: 1px solid oklch(1 0 0 / 0.18);
+  backdrop-filter: blur(26px) saturate(190%);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  border: 1px solid oklch(1 0 0 / 0.22);
   box-shadow: var(--shadow-nav);
 }
 
@@ -233,32 +340,41 @@
 @utility press {
   transform: translateZ(0);
   transition:
-    transform 0.22s var(--ease-spring),
-    box-shadow 0.22s ease-out,
-    background-color 0.2s ease-out;
+    transform 0.24s var(--ease-spring),
+    box-shadow 0.24s ease-out,
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out;
   will-change: transform;
   &:active {
-    transform: scale(0.96) translateZ(0);
+    transform: scale(0.965) translateZ(0);
   }
 }
 
-/* Subtle academic gradient for feature surfaces */
-@utility academic-surface {
-  background:
-    radial-gradient(120% 100% at 0% 0%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 60%),
-    linear-gradient(160deg, color-mix(in oklab, var(--accent) 45%, var(--card)) 0%, var(--card) 70%);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-card);
-}
-
-/* Document-style section heading */
+/* Section heading */
 @utility section-title {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--color-foreground);
+}
+
+/* Soft coloured glow behind icons / avatars */
+@utility soft-glow {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at 50% 50%,
+      color-mix(in oklab, var(--primary) 45%, transparent),
+      transparent 70%
+    );
+    filter: blur(14px);
+    z-index: -1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
