@@ -20,6 +20,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SiteEditorRouteImport } from './routes/site-editor'
 import { Route as StudentsRouteImport } from './routes/students'
 import { Route as UploadRouteImport } from './routes/upload'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as DocumentIdRouteImport } from './routes/document.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +78,11 @@ const UploadRoute = UploadRouteImport.update({
   path: '/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocumentIdRoute = DocumentIdRouteImport.update({
   id: '/document/$id',
   path: '/document/$id',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/site-editor': typeof SiteEditorRoute
   '/students': typeof StudentsRoute
   '/upload': typeof UploadRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/document/$id': typeof DocumentIdRoute
 }
 export interface FileRoutesByTo {
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/site-editor': typeof SiteEditorRoute
   '/students': typeof StudentsRoute
   '/upload': typeof UploadRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/document/$id': typeof DocumentIdRoute
 }
 export interface FileRoutesById {
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/site-editor': typeof SiteEditorRoute
   '/students': typeof StudentsRoute
   '/upload': typeof UploadRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/document/$id': typeof DocumentIdRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/site-editor'
     | '/students'
     | '/upload'
+    | '/auth/callback'
     | '/document/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/site-editor'
     | '/students'
     | '/upload'
+    | '/auth/callback'
     | '/document/$id'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/site-editor'
     | '/students'
     | '/upload'
+    | '/auth/callback'
     | '/document/$id'
   fileRoutesById: FileRoutesById
 }
@@ -183,6 +195,7 @@ export interface RootRouteChildren {
   SiteEditorRoute: typeof SiteEditorRoute
   StudentsRoute: typeof StudentsRoute
   UploadRoute: typeof UploadRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   DocumentIdRoute: typeof DocumentIdRoute
 }
 
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UploadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/document/$id': {
       id: '/document/$id'
       path: '/document/$id'
@@ -287,6 +307,7 @@ const rootRouteChildren: RootRouteChildren = {
   SiteEditorRoute: SiteEditorRoute,
   StudentsRoute: StudentsRoute,
   UploadRoute: UploadRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   DocumentIdRoute: DocumentIdRoute,
 }
 export const routeTree = rootRouteImport

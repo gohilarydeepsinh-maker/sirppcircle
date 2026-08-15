@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { GraduationCap, Loader2, BookOpenCheck, ShieldCheck, Download } from "lucide-react";
 import { toast } from "sonner";
 import { lovable } from "@/integrations/lovable/index";
@@ -7,6 +7,8 @@ import { useAuth } from "@/lib/auth";
 import { FullScreenLoader } from "@/components/AppShell";
 import { useSettings } from "@/lib/settings";
 import { AppLogo } from "@/components/AppLogo";
+import { isEmbeddedWebView, isMedianApp, openInSystemBrowser } from "@/lib/median";
+
 
 export const Route = createFileRoute("/")({
   ssr: false,
