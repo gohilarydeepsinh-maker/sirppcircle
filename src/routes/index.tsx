@@ -31,32 +31,92 @@ export const Route = createFileRoute("/")({
 });
 
 function Welcome() {
-  const { loading, session, profileComplete, profile } = useAuth();
+  const { loading, session, profileComplete, profile, refreshProfile } = useAuth();
   const settings = useSettings();
   const navigate = useNavigate();
   const [signingIn, setSigningIn] = useState(false);
+  const [waitingForBrowser, setWaitingForBrowser] = useState(false);
 
   useEffect(() => {
     if (loading || !session || !profile) return;
     void navigate({ to: profileComplete ? "/home" : "/complete-profile", replace: true });
   }, [loading, session, profile, profileComplete, navigate]);
 
-  if (loading) return <FullScreenLoader />;
-  if (session) return <FullScreenLoader label={settings.loadingMessage} />;
-
-  const signInWithGoogle = async () => {
+  const startBrowserFlow = useCallback(async (handoff: boolean) => {
     setSigningIn(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
+    const redirect_uri = `${window.location.origin}/auth/callback${handoff ? "?handoff=1" : ""}`;
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri });
     if (result.error) {
       setSigningIn(false);
-      toast.error("Unable to sign in. Please try again.");
+      console.error("[auth] google sign-in failed", result.error);
+      toast.error("Google Sign-In couldn't be completed. Please try again.");
       return;
     }
     if (result.redirected) return;
-    void navigate({ to: "/home" });
+    void navigate({ to: "/auth/callback" });
+  }, [navigate]);
+
+  // When the app hands sign-in off to the system browser it opens this page with
+  // ?googleSignIn=1 — start Google straight away in that real browser tab.
+  useEffect(() => {
+    if (typeof window === "undefined" || session) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("googleSignIn") !== "1" || isMedianApp()) return;
+    void startBrowserFlow(true);
+  }, [session, startBrowserFlow]);
+
+  const signInWithGoogle = async () => {
+    // Google rejects OAuth inside embedded WebViews (Median Android app), so we
+    // send the user to the device browser and return through /auth/callback.
+    if (isEmbeddedWebView()) {
+      openInSystemBrowser(`${window.location.origin}/?googleSignIn=1`);
+      setWaitingForBrowser(true);
+      return;
+    }
+    await startBrowserFlow(false);
   };
+
+  const checkSessionAfterBrowser = async () => {
+    setSigningIn(true);
+    await refreshProfile();
+    setSigningIn(false);
+  };
+
+  if (loading) return <FullScreenLoader />;
+  if (session) return <FullScreenLoader label={settings.loadingMessage} />;
+
+  if (waitingForBrowser) {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-6">
+        <div className="surface-card max-w-sm animate-fade-up p-8 text-center">
+          <h1 className="text-lg font-semibold">Continue in your browser</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Google sign-in opened in your browser for security. Finish signing in there — you'll
+            come straight back here.
+          </p>
+          <div className="mt-6 space-y-2">
+            <button
+              type="button"
+              onClick={checkSessionAfterBrowser}
+              disabled={signingIn}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground press disabled:opacity-70"
+            >
+              {signingIn ? <Loader2 className="size-4 animate-spin" /> : null}
+              I've signed in — continue
+            </button>
+            <button
+              type="button"
+              onClick={() => setWaitingForBrowser(false)}
+              className="w-full rounded-full border border-input bg-card px-5 py-3 text-sm font-semibold press"
+            >
+              Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="flex min-h-screen flex-col justify-between bg-background px-6 pb-10 pt-16">
